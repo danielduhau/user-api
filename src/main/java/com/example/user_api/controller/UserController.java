@@ -3,16 +3,20 @@ package com.example.user_api.controller;
 import com.example.user_api.dto.UserRequestDTO;
 import com.example.user_api.dto.UserResponseDTO;
 import com.example.user_api.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -20,6 +24,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        log.info("Fetching all users");
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -30,13 +35,23 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        log.info("Creating new user");
-        return ResponseEntity.ok(userService.createUser(userRequestDTO));
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        log.info("Creating new user: {}", userRequestDTO.getEmail());
+        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+        
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdUser.getId())
+                .toUri();
+        
+        return ResponseEntity.created(location).body(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserRequestDTO userRequestDTO) {
         log.info("Updating user with ID: {}", id);
         return ResponseEntity.ok(userService.updateUser(id, userRequestDTO));
     }
