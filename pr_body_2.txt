@@ -1,0 +1,61 @@
+## Overview
+Adiciona validação robusta, tratamento de erros padronizado e status codes HTTP corretos conforme padrões REST.
+
+## Changes
+- **ErrorResponseDTO**: Novo DTO para respostas de erro com detalhes de campos
+- **ApiResponseDTO**: Wrapper genérico para respostas de sucesso
+- **UserRequestDTO**: Validação melhorada (age 0-150, mensagens descritivas)
+- **GlobalExceptionHandler**: Handlers completos para:
+  - MethodArgumentNotValidException (validação de entrada)
+  - IllegalArgumentException (argumentos inválidos)
+  - ResourceNotFoundException (recurso não encontrado)
+  - Exception genérica (erros inesperados)
+- **UserController**: 
+  - API versioning (`/api/v1/users`)
+  - POST retorna 201 Created com Location header
+  - DELETE retorna 204 No Content
+  - Validação automática com @Valid
+- **User/UserResponseDTO**: age agora é Integer (opcional)
+
+## Breaking Changes
+- Endpoint `/users` → `/api/v1/users` (API versioning)
+- Respostas de erro agora retornam objeto estruturado com `fieldErrors`
+- POST retorna 201 em vez de 200
+
+## HTTP Status Codes
+- GET: 200 OK
+- POST: 201 Created (com Location header)
+- PUT: 200 OK
+- DELETE: 204 No Content
+- Validação: 400 Bad Request
+- Não encontrado: 404 Not Found
+- Erro interno: 500 Internal Server Error
+
+## Testing
+✅ mvn package -DskipTests ✅ Build passa
+
+### Teste manualmente:
+```bash
+# Criar usuário com idade inválida (deve falhar)
+curl -X POST http://localhost:8080/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John","email":"john@example.com","age":200}'
+
+# Resposta: 400 Bad Request com detalhes do erro
+
+# Criar usuário válido
+curl -X POST http://localhost:8080/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John","email":"john@example.com","age":30}'
+
+# Resposta: 201 Created com Location header
+```
+
+## Checklist
+- [x] Build passes locally
+- [x] Validação completa
+- [x] Error handling padronizado
+- [x] HTTP status codes corretos
+- [x] API versioning
+- [ ] Testes unitários (próximo PR)
+- [ ] Swagger/OpenAPI (próximo PR)

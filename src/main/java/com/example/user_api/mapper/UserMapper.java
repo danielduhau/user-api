@@ -3,25 +3,24 @@ package com.example.user_api.mapper;
 import com.example.user_api.dto.UserRequestDTO;
 import com.example.user_api.dto.UserResponseDTO;
 import com.example.user_api.model.User;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public User toEntity(UserRequestDTO dto) {
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setAge(dto.getAge());
-        return user;
-    }
+    /**
+     * Converte uma entidade User para UserResponseDTO.
+     * 
+     * @param user a entidade User
+     * @return UserResponseDTO
+     */
+    UserResponseDTO toResponseDTO(User user);
 
-    public UserResponseDTO toResponseDTO(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setAge(user.getAge());
-        return dto;
-    }
+    /**
+     * Converte um UserRequestDTO para a entidade User.
+     * 
+     * @param dto o UserRequestDTO
+     * @return uma nova entidade User
+     */
+    User toEntity(UserRequestDTO dto);
 }
