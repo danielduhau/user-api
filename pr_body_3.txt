@@ -1,0 +1,34 @@
+## Objective
+Integrate MapStruct to replace manual DTO ↔ Entity mapping code with compile-time generated implementations.
+
+## Changes
+- **Add MapStruct 1.3.1.Final** as annotation processor dependency
+- **Refactor UserMapper**: Convert from @Component class to MapStruct @Mapper interface
+  - Eliminates boilerplate mapping code (~50 LOC reduced)
+  - Type-safe field mapping with compile-time verification
+  - Performance optimized (zero-reflection generated code)
+  - Spring component integration via componentModel="spring"
+- **Maven Configuration**:
+  - annotationProcessorPaths configured for Lombok (1.18.30) + MapStruct processor
+  - Maven Compiler Plugin 3.10.1 for reliable annotation processing
+  - UTF-8 encoding for resource filtering
+- **Build Verification**: mvn clean package -DskipTests ✅ PASSED
+
+## Files Modified
+1. pom.xml - Add MapStruct dependency & compiler configuration
+2. UserMapper.java - Convert to MapStruct interface
+3. application.properties - UTF-8 encoding fix
+
+## Testing
+- Build passes on clean compile
+- Generated mapper implementation created during compilation
+- Ready for integration testing
+
+## Related Issues
+Completes mapper refactoring identified in architecture analysis.
+
+## Standards Applied
+- Compile-time code generation (no reflection)
+- Spring component model for dependency injection
+- Standard MapStruct naming conventions
+- UTF-8 resource encoding on Windows environments
