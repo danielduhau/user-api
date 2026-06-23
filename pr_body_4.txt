@@ -1,0 +1,62 @@
+## Objective
+Add comprehensive OpenAPI 3.0 / Swagger documentation and integrate MapStruct for automatic entity-DTO mapping.
+
+## Key Features
+
+### OpenAPI/Swagger Documentation
+- **SpringDoc OpenAPI 2.2.0**: Modern replacement for Springfox Swagger
+- **Swagger UI**: Available at `/swagger-ui.html` for interactive API testing
+- **OpenAPI JSON**: Available at `/v3/api-docs` for client code generation
+- **Endpoint Documentation**:
+  - All REST endpoints fully documented with @Operation
+  - Success and error response codes specified with @ApiResponse
+  - Endpoints organized by tags (@Tag)
+- **Configuration**:
+  - sortingoperations by HTTP method
+  - Tags sorted alphabetically
+
+### MapStruct Integration
+- **Automatic Mapping**: Replace manual DTO ↔ Entity mapping with compile-time generated code
+- **Performance**: Zero-reflection approach, optimized at build time
+- **Type Safety**: Compile-time verification of field mappings
+- **Spring Integration**: Seamless component model for dependency injection
+
+### Framework Upgrades (Cumulative)
+- Spring Boot: 2.6.7 → 3.3.0 LTS (latest LTS release)
+- Java: 11 → 17 LTS (latest LTS release)
+- Maven Compiler Plugin: 3.10.1 with annotation processors
+- Guava: 28.1 → 33.1.0-jre
+
+### Import Migration
+- javax.persistence.* → jakarta.persistence.*
+- javax.validation.* → jakarta.validation.*
+- Aligns with Spring Boot 3.x ecosystem changes
+
+## Files Modified
+1. pom.xml
+   - Add SpringDoc OpenAPI starter dependency
+   - Add MapStruct + processor configuration
+   - Update Spring Boot to 3.3.0, Java to 17
+   - Guava 33.1.0-jre
+2. UserController.java
+   - Add @Tag for endpoint organization
+   - Add @Operation for each REST endpoint
+   - Add @ApiResponse / @ApiResponses for documentation
+3. UserMapper.java
+   - Convert from @Component class to @Mapper interface
+4. application.properties
+   - Configure OpenAPI endpoints (/v3/api-docs, /swagger-ui.html)
+5. All Java files
+   - Migrate javax imports to jakarta
+
+## Testing
+- Build passes: mvn clean package ✅ PASSED
+- All endpoints compile and package successfully
+- Swagger UI accessible at localhost:8080/swagger-ui.html (when running)
+- OpenAPI JSON schema exportable at /v3/api-docs
+
+## Standards Applied
+- OpenAPI 3.0 specification compliance
+- Spring Boot 3.3.0 best practices
+- MapStruct compile-time code generation
+- JAX-B API compatibility (jakarta)
